@@ -1,13 +1,9 @@
-import os
 from flask import Flask, render_template, request,jsonify
 from flask_cors import CORS,cross_origin
 import requests
 from bs4 import BeautifulSoup as bs
 from urllib.request import urlopen as uReq
 import logging
-import pymongo
-from dotenv import load_dotenv
-load_dotenv()
 logging.basicConfig(filename="scrapper.log" , level=logging.INFO)
 
 app = Flask(__name__)
@@ -76,14 +72,6 @@ def index():
                 reviews.append(mydict)
             logging.info("log my final result {}".format(reviews))
 
-            try:
-                if reviews:
-                    client = pymongo.MongoClient(os.getenv('MONGO_CLIENT_URL'))
-                    db =client['scrapper_eng']
-                    coll_eng = db['scraper_eng']
-                    coll_eng.insert_many(reviews)
-            except:
-                logging.info("database error occurred")
 
             return render_template('result.html', reviews=reviews[0:(len(reviews)-1)])
         except Exception as e:
